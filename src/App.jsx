@@ -1,29 +1,25 @@
-import React, { useState } from 'react';
+import React, {useReducer } from 'react';
 import './App.scss';
 import 'antd/dist/antd.css';
-import { Button } from 'antd';
+import TodoList from './components/todo-list/todo-list';
+import TodoAdd from './components/todo-add/todo-add';
+import todoReducer from './reducer';
+import Store from './context';
+
+var initialState = {
+  todos: []
+}
 
 function App() {
-  const [data, setCount] = useState({ count: 1, name: 'ducanh' });
-  const [listUser, addListUser] = useState([]);
+  const [state, dispatch] = useReducer(todoReducer, initialState)
 
   return (
-    <div className="App container">
-      <p>count: {data.count}</p>
-      {/* <button onClick={() => setCount({...data, count: data.count + 1}) }> Plus count </button> */}
-      <Button type="primary" onClick={() => setCount({ ...data, count: data.count + 1 })}>
-        Plus count
-      </Button>
-
-      <Button type="primary" onClick={() => addListUser([...listUser, {name: `user-${listUser.length}`}])}>
-        addUser
-      </Button>
-      {
-        listUser.map((value, index) => (
-          <li key={index}>{value.name}</li>
-        ))
-      }
-    </div>
+    <Store.Provider value={{ state, dispatch }}>
+      <div className="App container">
+          <TodoAdd></TodoAdd>
+          <TodoList></TodoList>
+      </div>
+    </Store.Provider>
   );
 }
 
