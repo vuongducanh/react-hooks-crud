@@ -1,9 +1,9 @@
-import React, { useContext, useRef, useState, useMemo, useCallback } from 'react';
+import React, { useContext, useRef, useState, useMemo, useCallback, useEffect } from 'react';
 import './todo-add.scss';
 import Store from './../../context';
 import { Input } from 'antd';
 
-function TodoAdd() {
+function TodoAdd({counts,handleClick}) {
   const { dispatch } = useContext(Store);
   const [title, setTitle] = useState('')
   const inputEl = useRef(null);
@@ -19,7 +19,6 @@ function TodoAdd() {
       if (count > 3) {
         console.log(true)
       }
-      console.log('change useMemo count', count)
     },
     [count]
   );
@@ -30,6 +29,18 @@ function TodoAdd() {
     },
     [],
   );
+
+  useEffect(() => {
+    console.log('components todo-add')
+
+    return () => {
+      console.log('remove')
+    }
+  },[])
+
+  useEffect(() => {
+    // console.log('khi count update')
+  },[count])
 
   return (
     <div className="todo-list">
