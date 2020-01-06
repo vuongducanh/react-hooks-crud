@@ -7,6 +7,8 @@ import todoReducer from './reducer';
 import Store from './context';
 import TestReduce from './components/test-reduce/test-reduce';
 import UseMemo from './components/test-usememo/test-usememo';
+import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
+import Graphql from './components/graphql-api/graphql-api';
 
 var initialState = {
   todos: []
@@ -22,15 +24,39 @@ function App() {
 
   return (
     <Store.Provider value={{ state, dispatch }}>
-      <div className="App container">
-        <TodoAdd></TodoAdd>
-        <TodoList count={count} handleClick={incrementCounter}></TodoList>
-        <br></br>
-        <TestReduce></TestReduce>
-        <br></br>
-        <br></br>
-        <UseMemo></UseMemo>
-      </div>
+      <Router>
+        <div className="App container">
+          <ul>
+            <li>
+              <NavLink
+                exact to='/'
+                className='Header-navLink'
+                activeClassName='Header-isActive'
+              >Home
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink
+                exact to='/graphql'
+                className='Header-navLink'
+                activeClassName='Header-isActive'
+              >Graphql
+              </NavLink>
+            </li>
+          </ul>
+          <Route exact path='/graphql' component={Graphql} />
+          <Route exact path='/'>
+            <TodoAdd></TodoAdd>
+            <TodoList count={count} handleClick={incrementCounter}></TodoList>
+            <br></br>
+            <TestReduce></TestReduce>
+            <br></br>
+            <br></br>
+            <UseMemo></UseMemo>
+          </Route>
+        </div>
+      </Router>
     </Store.Provider>
 
   );
