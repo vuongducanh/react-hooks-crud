@@ -1,15 +1,19 @@
-import React, { useState } from 'react'
-import { useQuery } from '@apollo/react-hooks';
+import React, { useState, useEffect } from 'react'
+import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { Table, Button, Modal, Input } from 'antd';
-import { useMutation } from '@apollo/react-hooks';
 
 const { Column } = Table;
+const { Search } = Input;
+
 
 const Graphql = () => {
   const [showModal, activeModel] = useState(false);
-  const [title, setTitle] = useState('');
+  const [dataRecord, setDataRecord] = useState({});
+  const [statusModal, setStatusModal] = useState('');
   const { loading, error, data } = useQuery(LIST_USER);
+  const [originUser, setOriginUser] = useState([])
+  const [valueInput, setValueInput] = useState('')
 
   const [remove, { loading: loadingApi }] = useMutation(REMOVE_USER, {
     update(cache, { data: { deleteTodo } }) {
@@ -31,13 +35,21 @@ const Graphql = () => {
     }
   });
 
-  const handleDeleteUser = (id) => {
-    remove({ variables: { id: id } })
-  }
+  useEffect(() => {
+    if(!loading) {
+      setOriginUser({...data})
+    }
+  }, [loading, data])
 
-  const handleShowModal = () => {
-    setTitle('')
+  const [updateUser] = useMutation(UPDATE_USER)
+
+  const handleShowModal = (record, type) => {
+    setDataRecord({})
     activeModel(true)
+    setStatusModal(type)
+    if (type !== 'create') {
+      setDataRecord({ ...dataRecord, ...record })
+    }
   };
 
   const handleHideModal = () => {
@@ -45,38 +57,72 @@ const Graphql = () => {
   };
 
   const handleChangeTitle = (e) => {
-    setTitle(e.target.value)
+    setDataRecord({ ...dataRecord, title: e.target.value })
   }
 
   const handleCreateUser = () => {
-    if(!title) return;
+    if (!dataRecord.title) return;
 
-    createUser({ variables: { title: title } }).then(result => {
-      if(result.data) {
+    if (statusModal === 'create') {
+      createUser({ variables: { title: dataRecord.title } }).then(result => {
+        if (result.data) {
+          handleHideModal()
+        }
+      })
+    }
+
+    if (statusModal === 'update') {
+      updateUser({ variables: { id: dataRecord.id, title: dataRecord.title }}).then(result => {
+        if (result.data) {
+          handleHideModal()
+        }
+      })
+    }
+
+    if (statusModal === 'delete') {
+      remove({ variables: { id: dataRecord.id } }).then(result => {
         handleHideModal()
-      }
-    })
+      })
+    }
+  }
+
+  const handleSearch = (value) => {
+    data.todoes = originUser.todoes.filter(el => el.title.includes(value));
+    setValueInput(value)
   }
 
   if (error) return <h1>Error fetching user!</h1>
+
   if (!loading && data) {
     return (
       <div className="list-user">
-        <div style={{ marginBottom: 30, textAlign: 'left'}}>
-          <Button type="primary" onClick={handleShowModal}>
-            Create User
+        <div style={{ marginBottom: 30, width: '100%' }}>
+          <div style={{ textAlign: 'left', width: '50%', display: 'inline-block' }}>
+            <Button type="primary" onClick={() => handleShowModal(null, 'create')}>
+              Create User
           </Button>
+          </div>
+          <div style={{ textAlign: 'right', width: '50%', display: 'inline-block' }}>
+            <Search
+              placeholder="Search Title"
+              onSearch={value => handleSearch(value)}
+              style={{ width: 400 }}
+              enterButton
+            />
+          </div>
+
         </div>
 
         <Modal
-          title="Create User"
+          title={statusModal}
           visible={showModal}
           onOk={handleCreateUser}
           onCancel={handleHideModal}
-          okText="Save"
+          okText={statusModal}
           cancelText="cancel"
         >
-          <Input placeholder="title" value={title} onChange={handleChangeTitle}/>
+          {statusModal !== 'delete' && <Input placeholder="title" value={dataRecord.title} onChange={handleChangeTitle} />}
+          {statusModal === 'delete' && <span> Do You Want Delete: {dataRecord.title} </span>}
         </Modal>
 
         <Table dataSource={data.todoes} rowKey="id" loading={loadingApi}>
@@ -99,7 +145,10 @@ const Graphql = () => {
             title="Action"
             key="id"
             render={(text, record) => (
-              <Button onClick={() => handleDeleteUser(record.id)}>Delete</Button>
+              <>
+                <Button onClick={() => handleShowModal(record, 'delete')}>Delete</Button>
+                <Button type="primary" onClick={() => handleShowModal(record, 'update')} style={{ marginLeft: 10 }}>Update</Button>
+              </>
             )}
           />
         </Table>
@@ -137,5 +186,20 @@ export const CREATE_USER = gql`
     }
   }
 `
+export const UPDATE_USER = gql`
+  mutation updateTodo($id: ID!, $title: String!) {
+    updateTodo(data: {title: $title} where: {id: $id}) {
+      id
+      title
+      completed
+    }
+  }
+`
+
+// const FILTER_USER = gql`
+//   mutation FilterUser($key: String!) {
+//     filterUser(key: $key) @client
+//   }
+// `;
 
 export default Graphql;
