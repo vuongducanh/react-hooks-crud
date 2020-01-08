@@ -11,24 +11,41 @@ import { HttpLink } from 'apollo-link-http';
 import { InMemoryCache } from 'apollo-cache-inmemory';
 
 const GRAPHCMS_API = 'https://us1.prisma.sh/public-ceruleanforger-651/todo-in-react-apollo/dev'
-
+const cache = new InMemoryCache();
+cache.writeData({
+  data: {
+    userList: [{id: '1', completed: true, text: '1234', __typename: 'listUser'}]
+  }
+})
 const client = new ApolloClient({
   link: new HttpLink({ uri: GRAPHCMS_API }),
-  cache: new InMemoryCache(),
+  cache,
   resolvers: {
     Mutation: {
       filterUser: (_, variables, { cache }) => {
         const { todoes } = cache.readQuery({ query: LIST_USER });
 
-        const dataFilter = todoes.filter(el => el.title.includes(variables.key));
+        // const dataFilter = todoes.filter(el => el.title.includes(variables.key));
 
-        cache.writeQuery({
-          query: LIST_USER,
-          data: { todoes: dataFilter },
-        });
+        // cache.writeQuery({
+        //   query: LIST_USER,
+        //   data: { todoes: dataFilter },
+        // });
 
         return null;
       },
+      setUserList: (_, variables, {cache}) => {
+        const { userList } = cache.readQuery({ query: GET_ALL_USER });
+
+        console.log(variables);
+
+        cache.writeQuery({
+          query: GET_ALL_USER,
+          data: { userList: [...userList, {...variables}] },
+        });
+
+        return null
+      }
     },
   }
 });
@@ -41,7 +58,17 @@ export const LIST_USER = gql`
       completed
     }
   }
-`
+`;
+
+const GET_ALL_USER = gql`
+  {
+    userList @client {
+      id
+      completed
+      text
+    }
+  }
+`;
 
 ReactDOM.render(
   <ApolloProvider client={client}>

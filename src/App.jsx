@@ -1,6 +1,6 @@
 import React, { useReducer, useState } from 'react';
-import './App.scss';
 import 'antd/dist/antd.css';
+import './App.scss';
 import TodoList from './components/todo-list/todo-list';
 import TodoAdd from './components/todo-add/todo-add';
 import todoReducer from './reducer';
