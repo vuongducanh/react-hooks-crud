@@ -32,7 +32,7 @@ const client = new ApolloClient({
         //   data: { todoes: dataFilter },
         // });
 
-        return null;
+        return todoes;
       },
       setUserList: (_, variables, {cache}) => {
         const { userList } = cache.readQuery({ query: GET_ALL_USER });

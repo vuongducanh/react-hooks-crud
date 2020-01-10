@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react'
+import './graphql-api.scss'
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
 import { Table, Button, Modal, Input } from 'antd';
 import Pagination from './../common/pagination/pagination';
+
 const { Column } = Table;
 const { Search } = Input;
 
@@ -14,7 +16,6 @@ const Graphql = () => {
   const { loading, error, data } = useQuery(LIST_USER);
   const [originUser, setOriginUser] = useState([])
   const [pageOfItems, setPageOfItems] = useState([])
-  const [offset, setOffset] = useState(1)
 
   const [remove, { loading: loadingApi }] = useMutation(REMOVE_USER, {
     update(cache, { data: { deleteTodo } }) {
@@ -23,15 +24,6 @@ const Graphql = () => {
         query: LIST_USER,
         data: { todoes: todoes.filter(el => el.id !== deleteTodo.id) },
       });
-      let removeUser = pageOfItems.filter(el => el.id !== deleteTodo.id)
-      setPageOfItems([...removeUser])
-      if(offset > 1 && removeUser.length > 0) {
-        setOffset(offset)
-      } else {
-        setOffset(offset - 1)
-      }
-
-      console.log('offset1 =', offset)
     }
   });
 
@@ -51,7 +43,7 @@ const Graphql = () => {
     }
   }, [loading, data])
 
-  const [updateUser] = useMutation(UPDATE_USER)
+  const [updateUser] = useMutation(UPDATE_USER);
 
   const handleShowModal = (record, type) => {
     setDataRecord({})
@@ -101,9 +93,8 @@ const Graphql = () => {
     setPageOfItems(data.todoes)
   }
 
-  const handleChangePage = (itemInPage, currentPage) => {
+  const handleChangePage = (itemInPage) => {
     setPageOfItems(itemInPage)
-    setOffset(currentPage)
   }
 
   if (error) return <h1>Error fetching user!</h1>
@@ -167,12 +158,13 @@ const Graphql = () => {
             )}
           />
         </Table>
-        <Pagination
-          array={data.todoes}
-          onChangePage={handleChangePage}
-          limit={5}
-          offset={offset}
-        />
+        <div className="user-pagination">
+          <Pagination
+            data={data.todoes}
+            onChangePage={handleChangePage}
+            limit={5}
+          />
+        </div>
       </div>
     )
   }
@@ -216,27 +208,5 @@ export const UPDATE_USER = gql`
     }
   }
 `
-
-const FILTER_USER = gql`
-  mutation FilterUser($key: String!) {
-    filterUser(key: $key) @client
-  }
-`;
-
-const SET_USER_LIST = gql`
-  mutation SetUserList($id: ID!, $completed: Boolean!, $text: String!, $__typename: String!) {
-    setUserList(id: $id, completed: $completed, text: $text, __typename: $__typename) @client
-  }
-`;
-
-const GET_ALL_USER = gql`
-  {
-    userList @client {
-      id
-      completed
-      text
-    }
-  }
-`;
 
 export default Graphql;

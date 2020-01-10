@@ -9,6 +9,7 @@ import TestReduce from './components/test-reduce/test-reduce';
 import UseMemo from './components/test-usememo/test-usememo';
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
 import Graphql from './components/graphql-api/graphql-api';
+import Chart from './components/chart/chart'
 
 var initialState = {
   todos: []
@@ -44,8 +45,18 @@ function App() {
               >Graphql
               </NavLink>
             </li>
+
+            <li>
+              <NavLink
+                exact to='/chart'
+                className='Header-navLink'
+                activeClassName='Header-isActive'
+              > chart
+              </NavLink>
+            </li>
           </ul>
           <Route exact path='/graphql' component={Graphql} />
+          <Route exact path='/chart' component={Chart} />
           <Route exact path='/'>
             <TodoAdd></TodoAdd>
             <TodoList count={count} handleClick={incrementCounter}></TodoList>

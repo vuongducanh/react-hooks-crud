@@ -1,37 +1,41 @@
 import React, { useState, useEffect } from 'react';
 import './pagination.scss';
+import { Icon } from 'antd';
 
-function Pagination({ array, onChangePage, limit, offset }) {
+function Pagination({ data, onChangePage, limit }) {
   const [pager, setPager] = useState({})
 
   useEffect(() => {
-      setPage(1)
+    setPage(1)
   }, [])
 
-  // useEffect(() => {
-  //   setPage(1)
-  // }, [array])
-
   useEffect(() => {
-    console.log('offset = ', offset)
-    setPage(offset)
-  }, [offset])
+    setPage(1)
+    const totalArray = data.slice(pager.startIndex, pager.endIndex + 1)
+    if(totalArray.length > 0) {
+      setPage(pager.currentPage)
+    } else {
+      setPage(pager.currentPage - 1)
+      if(data.length !== pager.endIndex) {
+        setPage(1)
+      }
+    }
+  }, [data])
 
   const setPage = (page) => {
-    var items = array;
+    var items = data;
     var pagers = pager;
 
-    if (page < 1 || page > pagers.totalPages) {
+    if (page < 1 || !page) {
       return;
     }
 
     pagers = getPager(items.length, page, limit);
-
     var pageOfItems = items.slice(pagers.startIndex, pagers.endIndex + 1);
 
     setPager({...pagers})
 
-    onChangePage(pageOfItems, page)
+    onChangePage(pageOfItems)
   }
 
   const getPager = (totalItems, currentPage, pageSize) => {
@@ -91,21 +95,23 @@ function Pagination({ array, onChangePage, limit, offset }) {
   return (
     <ul className="pagination">
       <li className={`page-item ${pager.currentPage === 1 ? 'disabled' : ''}`}>
-        <span className="page-link" onClick={() => setPage(1)}>First</span>
+        <span onClick={() => setPage(pager.currentPage - 1)}><Icon type="left" /></span>
       </li>
+
       <li className={`page-item ${pager.currentPage === 1 ? 'disabled' : ''}`}>
-        <span className="page-link"  onClick={() => setPage(pager.currentPage - 1)}>Previous</span>
+        <span onClick={() => setPage(1)}><Icon type="double-left" /></span>
       </li>
       {pager.pages.map((page, index) =>
         <li key={index} className={`page-item ${pager.currentPage === page ? 'active' : ''}`}>
-          <span className="page-link"  onClick={() => setPage(page)}>{page}</span>
+          <span className="number-item" onClick={() => setPage(page)}>{page}</span>
         </li>
       )}
       <li className={`page-item ${pager.currentPage === pager.totalPages ? 'disabled' : ''}`}>
-        <span className="page-link"  onClick={() => setPage(pager.currentPage + 1)}>Next</span>
+        <span onClick={() => setPage(pager.totalPages)}><Icon type="double-right" /></span>
       </li>
+
       <li className={`page-item ${pager.currentPage === pager.totalPages ? 'disabled' : ''}`}>
-        <span className="page-link"  onClick={() => setPage(pager.totalPages)}>Last</span>
+        <span onClick={() => setPage(pager.currentPage + 1)}><Icon type="right" /></span>
       </li>
     </ul>
   );

@@ -1,0 +1,25 @@
+.pagination {
+  .page-item {
+    cursor: pointer;
+    margin-right: 20px;
+
+    span {
+      font-size: 19px;
+    }
+
+    .number-item {
+      line-height: 35px;
+    }
+
+    &.active {
+      span {
+        color: #007bff;
+      }
+    }
+
+    &.disabled {
+      pointer-events: none;
+      color: #6c757d;
+    }
+  }
+}
