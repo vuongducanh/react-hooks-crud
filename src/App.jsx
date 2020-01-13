@@ -56,7 +56,6 @@ function App() {
             </li>
           </ul>
           <Route exact path='/graphql' component={Graphql} />
-          <Route exact path='/chart' component={Chart} />
           <Route exact path='/'>
             <TodoAdd></TodoAdd>
             <TodoList count={count} handleClick={incrementCounter}></TodoList>
@@ -67,6 +66,7 @@ function App() {
             <UseMemo></UseMemo>
           </Route>
         </div>
+        <Route exact path='/chart' component={Chart} />
       </Router>
     </Store.Provider>
 

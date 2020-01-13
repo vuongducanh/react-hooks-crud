@@ -1,85 +1,57 @@
-import React from 'react';
-import DemoChart from './../common/test-chart/test-chart';
+import React, { useState } from 'react';
+import ChartSpiderWeb from './../common/chart-spider-web/chart-spider-web';
 
-const options = {
-  colors: ["#ffe0b2", "#cac1a0"],
-  chart: {
-    polar: true,
-    type: 'area'
+const dataChart = {
+  categories: ["Current Ratio", "Quick Ratio", "Cash Ratio", "Total Liabilities/Owner's Equity", "Debt/Equity"],
+  tickPositions: [0, 0.5, 1, 1.5, 2, 2.5],
+  series1: {
+    name: "Automobile Trading",
+    data: [2.1, .6, .5, .6, 1.8],
+    color: "#0169a8"
   },
-
-  credits: {
-    enabled: false
-  },
-
-  title: {
-    text: '',
-    x: -80
-  },
-
-  pane: {
-    size: '80%'
-  },
-
-  xAxis: {
-    categories: ['Sales', 'Marketing', 'Development', 'Customer Support',
-      'Information Technology', 'Administration'],
-    tickmarkPlacement: 'on',
-    lineWidth: 0,
-    gridLineColor: 'transparent',
-  },
-
-  yAxis: {
-    gridLineInterpolation: 'polygon',
-    lineWidth: 0,
-    min: 0,
-    maxPadding: 0.01
-  },
-
-  tooltip: {
-    shared: true,
-    pointFormat: '<span style="color:{series.color}">{series.name}: <b>${point.y:,.0f}</b><br/>'
-  },
-
-  legend: {
-    verticalAlign: 'bottom',
-    layout: 'horizontal',
-  },
-
-  series: [{
-    name: 'Allocated Budget',
-    data: [43000, 19000, 60000, 35000, 17000, 10000],
-    pointPlacement: 'on',
-  }, {
-    name: 'Actual Spending',
-    data: [50000, 39000, 42000, 31000, 26000, 14000],
-    pointPlacement: 'on',
-  }],
-
-  responsive: {
-    rules: [{
-      condition: {
-        maxWidth: 500
-      },
-      chartOptions: {
-        legend: {
-          align: 'center',
-          verticalAlign: 'bottom',
-          layout: 'horizontal'
-        },
-        pane: {
-          size: '70%'
-        }
-      }
-    }]
+  series2: {
+    name: "Real Eslate",
+    data: [2.5, 1.8, 1, 0.5, 1.4],
+    color: "#fe9901"
   }
+}
 
-};
+const dataChart2 = {
+  categories: ["ROA(%)", "ROE(%)", "Net Revenue(%)", "Net Profit Growth(%)", "Assets Growth(%)"],
+  tickPositions: [0, 50, 100, 150, 200, 250, 300, 350, 400, 450],
+  series1: {
+    name: "Automobile Trading",
+    data: [0, 25, 125, 100, 100],
+    color: "#0169a8"
+  },
+  series2: {
+    name: "Real Eslate",
+    data: [0, 10, 300, 450, 50],
+    color: "#fe9901"
+  }
+}
+
+const dataChart3 = {
+  categories: ["Gross Profit Margin (%)", "Operating Profit Margin(%)", "EBIT Margin (%)", "Net Profit(%)", "CFO/ Net Revenue"],
+  tickPositions: [0, 5, 10, 15, 20, 25, 30, 35, 40],
+  series1: {
+    name: "Automobile Trading",
+    data: [14, 5, 5, 5, 0],
+    color: "#0169a8"
+  },
+  series2: {
+    name: "Real Eslate",
+    data: [33, 40, 20, 30, 0],
+    color: "#fe9901"
+  }
+}
 
 function Chart() {
   return (
-    <div className="chart">
-      <DemoChart option={options} />
+    <div className="chart" style={{display: 'grid', gridTemplateColumns: 'auto auto auto'}}>
+      <ChartSpiderWeb dataChart={dataChart} />
+      <ChartSpiderWeb dataChart={dataChart2} />
+      <ChartSpiderWeb dataChart={dataChart3} />
     </div>
   )
 }
