@@ -67,18 +67,21 @@ function ChartNegativeStack() {
     },
 
     series: [{
+      type: 'bar',
       name: 'Male',
       data: [
         -.3, -2.1, -2.2
       ],
       color: "red",
     }, {
+      type: 'bar',
       name: 'Female',
       data: [
         -2.2, -2.1, -2.2
       ],
       color: "blue"
     }, {
+      type: 'bar',
       name: 'Male',
       data: [
         -2.1, -2.3, -2.5
@@ -86,6 +89,7 @@ function ChartNegativeStack() {
       color: "red"
     },
     {
+      type: 'bar',
       name: 'Female',
       data: [
         2.1, 2.0, 2.5
@@ -93,6 +97,7 @@ function ChartNegativeStack() {
       color: "blue"
     },
     {
+      type: 'bar',
       name: 'Male',
       data: [
         2.1, 2.0, 2.1
@@ -100,6 +105,7 @@ function ChartNegativeStack() {
       color: "red"
     },
     {
+      type: 'bar',
       name: 'Female',
       data: [
         2.1, 2.0, 2.5
