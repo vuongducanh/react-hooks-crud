@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ChartSpiderWeb from './../common/chart-spider-web/chart-spider-web';
+import ChartNegativeStack from './../common/chart-negative-stack/chart-negative-stack'
 
 const dataChart = {
   categories: ["Current Ratio", "Quick Ratio", "Cash Ratio", "Total Liabilities/Owner's Equity", "Debt/Equity"],
@@ -48,11 +49,14 @@ const dataChart3 = {
 
 function Chart() {
   return (
-    <div className="chart" style={{display: 'grid', gridTemplateColumns: 'auto auto auto'}}>
-      <ChartSpiderWeb dataChart={dataChart} />
-      <ChartSpiderWeb dataChart={dataChart2} />
-      <ChartSpiderWeb dataChart={dataChart3} />
-    </div>
+    <>
+      <div className="chart" style={{ display: 'grid', gridTemplateColumns: 'auto auto auto' }}>
+        <ChartSpiderWeb dataChart={dataChart} />
+        <ChartSpiderWeb dataChart={dataChart2} />
+        <ChartSpiderWeb dataChart={dataChart3} />
+      </div>
+      <ChartNegativeStack />
+    </>
   )
 }
 
